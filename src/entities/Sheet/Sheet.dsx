@@ -1,0 +1,29 @@
+import * as THREE from 'three'
+
+class Sheet {
+    create = ({context, props}) => {
+        const {scene} = context
+        const {color} = props
+        console.log('color: ', color)
+        const geometry = new THREE.PlaneGeometry(4, 4)
+        geometry.computeFaceNormals();
+        const material = new THREE.MeshPhongMaterial({color})
+        material.shininess = 100
+        const sheet = new THREE.Mesh(geometry, material)
+
+        // sheet.rotation.x = 20 * (Math.PI / 180)
+
+        scene.add(sheet)
+
+        return {sheet}
+    }
+
+    update = ({state}) => {
+        const {sheet} = state
+
+        // sheet.rotation.x = -10 * (Math.PI / 180)
+
+    }
+}
+
+export default Sheet

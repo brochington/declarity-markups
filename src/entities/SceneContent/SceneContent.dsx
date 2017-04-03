@@ -1,0 +1,207 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+import Sheet from '../Sheet'
+import Raycaster from '../Raycaster'
+
+const dimensions = ['x', 'y', 'z']
+
+const easings = {
+    standard: (t, b, c, d) => {
+        return c * t / d + b;
+    },
+    sinusodial: (t, b, c, d)  => {
+	    return c * Math.sin(t/d * (Math.PI/2)) + b;
+    }
+}
+
+const position = {
+    create: ({state, props}) => {
+        const {sheet} = state
+        const {x, y, z} = props.position
+
+        sheet.position.x = x
+        sheet.position.y = y
+        sheet.position.z = z
+
+        const tick = {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+
+        return {lastPosition: props.position, tick}
+    },
+
+    update: ({state, props}) => {
+        const {sheet, animating, animatable, lastPosition, tick} = state
+        const {position, animate} = props
+        // console.log(sheet.position.x)
+        // t = sheet.position.x
+        // b = original x
+        // c = change between original x, and destination value for x
+        // d = total time of tween
+
+        let newLastPosition = lastPosition
+        let newTick = tick
+
+        if (animate) {
+            for(let i = 0; i < dimensions.length; i++) {
+                const dimension = dimensions[i]
+                const originalDimension = lastPosition[dimension]
+                const delta = position[dimension] - originalDimension
+                const duration = 100
+
+                // const easing = delta * newTick[dimension] / duration + originalDimension
+                const easing = easings.sinusodial(newTick[dimension], originalDimension, delta, duration)
+
+                if (position[dimension] !== sheet.position[dimension]) {
+                    // console.log(delta, sheet.position[dimension], duration, originalDimension, easing)
+                    if (position[dimension] >= sheet.position[dimension]) {
+                        sheet.position[dimension] = easing
+                    }
+
+                    else if (position[dimension] <= sheet.position[dimension]){
+                        sheet.position[dimension] = easing
+                    }
+
+                    sheet.position[dimension] = parseFloat(sheet.position[dimension].toFixed(2))
+                    newTick[dimension] += 1;
+                }
+
+                else {
+                    newLastPosition[dimension] = position[dimension]
+                    newTick[dimension] = 0;
+                }
+            }
+        }
+
+        else {
+            sheet.position.x = position.x
+            sheet.position.y = position.y
+            sheet.position.z = position.z
+
+            newLastPosition = position
+        }
+
+        return {lastPosition: newLastPosition, tick: newTick}
+    }
+}
+
+const sheetIntersects = {
+    update: ({context, state, props}) => {
+        const {intersects, mouseEvents} = context
+        const {sheet} = state
+        let sheetColor = props.color;
+        // console.log(mouseEvents)
+        if (intersects.length > 0 && intersects[0].object === sheet && mouseEvents.mousedown) {
+            sheetColor = 0xff00ff
+        }
+
+        sheet.material.color.set(sheetColor)
+
+    }
+}
+
+const onClick = (clickHandler, sheetID) => {
+    return {
+        update: ({context, state, props}) => {
+            const {intersects, mouseEvents} = context
+            const {sheet, hasClicked} = state
+
+            let newHasClicked = hasClicked
+
+            if (
+                intersects[0] &&
+                intersects[0].object === sheet &&
+                mouseEvents.mousedown &&
+                !hasClicked
+            ) {
+                newHasClicked = true
+                clickHandler && clickHandler(sheet, sheetID)
+            }
+
+            if (mouseEvents.mouseup) {
+                newHasClicked = false
+            }
+
+            return {hasClicked: newHasClicked}
+        }
+    }
+}
+
+const animate = (destination) => {
+    return {
+        update: ({state}) => {
+            const {sheet, animating} = state
+
+            let newAnimating = animating
+
+            // console.log(destination.x, sheet.position.x)
+            if (destination.x !== sheet.position.x) {
+                newAnimating = true
+
+                if (sheet.position.x < destination.x) {
+                    sheet.position.x += 0.01
+                }
+
+                else {
+                    sheet.position.x -= 0.01
+                }
+            }
+
+            else {
+                newAnimating = false
+            }
+
+            return {
+                animating: newAnimating,
+                animatable: true
+            }
+        }
+    }
+}
+
+const clickHandler = (sheet, sheetID) => {
+    console.log('clicked!!', sheetID)
+}
+
+class SceneContent {
+    create = ({context}) => {
+        const {scene} = context;
+    }
+
+    update = ({state}) => {
+
+    }
+
+    render = () => {
+        return (
+            <Raycaster key='sheet-raycaster'>
+                <Sheet
+                    key="sheet-1"
+                    position={{x: -4, y: 0, z: 0}}
+                    animate={true}
+                    color={0xff0000}
+                    systems={[position, sheetIntersects, onClick(clickHandler, 'sheet-1')]}
+                />
+                <Sheet
+                    key="sheet-2"
+                    position={{x: 0, y: 0, z: 0}}
+                    animate={true}
+                    color={0x00ff00}
+                    systems={[position, sheetIntersects, onClick(clickHandler, 'sheet-2')]}
+                />
+                <Sheet
+                    key="sheet-3"
+                    position={{x: 4, y: 0, z: 0}}
+                    animate={true}
+                    color={0x0000ff}
+                    systems={[position, sheetIntersects, onClick(clickHandler, 'sheet-3')]}
+                />
+            </Raycaster>
+        );
+    }
+}
+
+export default SceneContent

@@ -1,0 +1,35 @@
+import * as THREE from 'three'
+
+class DirectionalLight {
+    create = ({context}) => {
+        const {scene, actions} = context
+        var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 )
+
+        directionalLight.castShadow = true;
+        directionalLight.color.setHSL(0.6, 0, 1)
+        directionalLight.position.set(0, 0, 0)
+        console.log(directionalLight)
+        actions.setLight('directionalLight', directionalLight)
+        scene.add(directionalLight)
+
+
+        var geometry = new THREE.SphereGeometry( 0.1, 10, 10 );
+        var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+        var sphere = new THREE.Mesh( geometry, material );
+        sphere.position.set(0, 0, 0)
+
+        var pointLight = new THREE.PointLight( 0xffffff, 4, 800 );
+        sphere.add(pointLight)
+        scene.add( sphere );
+
+        return {directionalLight, sphere}
+    }
+
+    update = ({state}) => {
+        const {directionalLight, sphere} = state
+        // directionalLight.position.set(0, 3, 3)
+        sphere.position.set(0, 0, 4)
+    }
+}
+
+export default DirectionalLight

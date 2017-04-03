@@ -1,6 +1,10 @@
 const canvasActions = {
-    setCanvasWrapper: (state, actions, canvasWrapper) => {
-        return state().set('canvasWrapper', canvasWrapper)
+    setStageCanvasId(state, actions) {
+        console.log('setStageCanvasId');
+        return state()
+    },
+    setCanvas(state, actions, canvas) {
+        return state().set('canvas', canvas)
     }
 }
 

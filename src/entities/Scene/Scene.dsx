@@ -1,0 +1,30 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+class Scene {
+    getChildContext = ({state}) => {
+        const {scene} = state;
+
+        return {
+            scene
+        }
+    }
+
+    create = ({context}) => {
+        const {actions} = context;
+        const scene = new THREE.Scene()
+        scene.background = new THREE.Color(0.7, 0.7, 0.7)
+
+        actions.setScene(scene)
+
+        return {scene}
+    }
+
+    update = (stuff) => {
+        // console.log('Scene update!', stuff);
+    }
+
+    render = ({children}) => children
+}
+
+export default Scene

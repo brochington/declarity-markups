@@ -1,3 +1,3 @@
-import WebGLRenderer from './WebGLRenderer'
+import WebGLRenderer from './WebGLRenderer.dsx'
 
 export default WebGLRenderer

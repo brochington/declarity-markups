@@ -1,0 +1,54 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+import WebGLRenderer from '../WebGLRenderer'
+import MouseEvents from '../MouseEvents'
+import Scene from '../Scene'
+
+import PerspectiveCamera from '../PerspectiveCamera'
+import AmbientLight from '../AmbientLight'
+import DirectionalLight from '../DirectionalLight'
+
+import SceneContent from '../SceneContent'
+
+class Stage {
+    getChildContext = ({state, props, context}) => {
+        const {appState, actions} = context;
+        const {containerEl} = props
+
+        return {
+            appState,
+            actions,
+            containerEl
+        }
+    }
+
+    create = ({props, setState, getParams, context}) => {
+        const render = () => {
+            requestAnimationFrame(render)
+
+            setState({})
+        }
+
+        render()
+
+        return {};
+    }
+
+    render = ({state, props}) => {
+        return [
+            <WebGLRenderer key="webglrenderer" container={props.containerEl}>
+                <MouseEvents key="mouseEvents">
+                    <Scene key="scene">
+                        <PerspectiveCamera key="perspectiveCamera"/>
+                        <AmbientLight key="ambientLight" />
+                        <DirectionalLight key="directionalLight" />
+                        <SceneContent key="sceneContent" />
+                    </Scene>
+                </MouseEvents>
+            </WebGLRenderer>
+        ]
+    }
+}
+
+export default Stage

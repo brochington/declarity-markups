@@ -1,3 +1,3 @@
-import PerspectiveCamera from './PerspectiveCamera'
+import PerspectiveCamera from './PerspectiveCamera.dsx'
 
 export default PerspectiveCamera

@@ -1,9 +1,8 @@
-/** @jsx Declarity.createEntity */
 import Declarity from 'declarity'
 import * as THREE from 'three'
 
 const onMouseMove = (event, params) => {
-    const {setState, state: {mouse}} = params
+    const {state: {mouse}} = params
     mouse.x = (event.clientX / event.target.width) * 2 - 1
     mouse.y = - (event.clientY / event.target.height) * 2 + 1
 }
@@ -18,12 +17,35 @@ class MousePosition {
     create = ({context, getParams}) => {
         const {containerEl} = context;
         let mouse = new THREE.Vector2()
+        let mouseEvents = {
+            mouseover: false,
+            mouseleave: false,
+            mousedown: false,
+            mouseup: false,
+        }
 
         const localOnMouseMove = event => onMouseMove(event, getParams())
+
+        const localOnMouseDown = event => {
+            mouseEvents.mousedown = true;
+        }
+
+        const localOnMouseUp = event => {
+            mouseEvents.mousedown = false;
+            mouseEvents.mouseup = true;
+        }
+
         const localOnMouseOver = event => {
+            mouseEvents.mouseover = true;
+            containerEl.addEventListener('mousedown', localOnMouseDown, false)
+            containerEl.addEventListener('mouseup', localOnMouseUp, false)
             containerEl.addEventListener('mousemove', localOnMouseMove, false)
         }
+
         const localOnMouseLeave = event => {
+            mouseEvents.mouseover = false;
+            containerEl.addEventListener('mousedown', localOnMouseDown)
+            containerEl.addEventListener('mouseup', localOnMouseUp)
             containerEl.removeEventListener('mousemove', localOnMouseMove)
             mouse.x = null
             mouse.y = null
@@ -32,12 +54,14 @@ class MousePosition {
         containerEl.addEventListener('mouseover', localOnMouseOver, false)
         containerEl.addEventListener('mouseleave', localOnMouseLeave, false)
 
-        return {mouse}
+        return {mouse, mouseEvents}
     }
 
-    // update = () => {
-    //
-    // }
+    didUpdate = ({state: {mouseEvents}}) => {
+        if (mouseEvents.mouseup) {
+            mouseEvents.mouseup = false
+        }
+    }
 
     render = ({children}) => {
         return children

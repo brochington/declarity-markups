@@ -1,13 +1,13 @@
 import canvasActions from './canvas'
-import webglActions from './webgl'
 import sceneActions from './scene'
 import cameraActions from './camera'
 import lightActions from './light'
+import audioActions from './audio'
 
 export default {
     ...canvasActions,
-    ...webglActions,
     ...sceneActions,
     ...cameraActions,
-    ...lightActions
+    ...lightActions,
+    ...audioActions
 }

@@ -1,0 +1,16 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+class AmbientLight {
+    create = ({context}) => {
+        const {scene, camera, actions} = context;
+        let light = new THREE.AmbientLight(0x444444)
+
+        scene.add(light)
+        actions.setLight('ambientLight', light)
+
+        return {light}
+    }
+}
+
+export default AmbientLight
