@@ -1,5 +1,6 @@
 import Declarity from 'declarity'
 import * as THREE from 'three'
+import Immutable from 'immutable'
 
 import WebGLRenderer from '../WebGLRenderer'
 import MouseEvents from '../MouseEvents'
@@ -10,6 +11,9 @@ import AmbientLight from '../AmbientLight'
 import DirectionalLight from '../DirectionalLight'
 
 import SceneContent from '../SceneContent'
+
+import animatedPosition from '../../systems/animatedPosition'
+import animatedRotation from '../../systems/animatedRotation'
 
 class Stage {
     getChildContext = ({state, props, context}) => {
@@ -35,14 +39,21 @@ class Stage {
         return {};
     }
 
-    render = ({state, props}) => {
+    render = ({state, props, context}) => {
+        const { appState } = context
+        const cameraPosition = appState.getIn(['cameraState', 'position'], Immutable.Map({x: 0, y: 0, z:0})).toJS()
+        // console.log(cameraPosition)
         return [
             <WebGLRenderer key="webglrenderer" container={props.containerEl}>
                 <MouseEvents key="mouseEvents">
                     <Scene key="scene">
-                        <PerspectiveCamera key="perspectiveCamera"/>
+                        <PerspectiveCamera
+                            key="perspectiveCamera"
+                            position={cameraPosition}
+                            animate={true}
+                            systems={[animatedPosition('camera')]}
+                        />
                         <AmbientLight key="ambientLight" />
-                        <DirectionalLight key="directionalLight" />
                         <SceneContent key="sceneContent" />
                     </Scene>
                 </MouseEvents>

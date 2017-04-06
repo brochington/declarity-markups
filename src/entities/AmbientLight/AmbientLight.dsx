@@ -4,7 +4,7 @@ import * as THREE from 'three'
 class AmbientLight {
     create = ({context}) => {
         const {scene, camera, actions} = context;
-        let light = new THREE.AmbientLight(0x444444)
+        let light = new THREE.AmbientLight(0xEEEEEE)
 
         scene.add(light)
         actions.setLight('ambientLight', light)

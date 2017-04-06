@@ -30,6 +30,10 @@ class DirectionalLight {
         // directionalLight.position.set(0, 3, 3)
         sphere.position.set(0, 0, 4)
     }
+
+    willUnmount = ({state}) => {
+
+    }
 }
 
 export default DirectionalLight

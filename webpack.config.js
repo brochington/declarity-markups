@@ -27,6 +27,10 @@ module.exports = {
             test: /\.dsx$/,
             use: ['babel-loader', 'declarity-loader'],
             include: path.join(__dirname, 'src/entities')
+        }, {
+            test: /\.(ico|jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2)(\?.*)?$/,
+            use: ['file-loader'],
+            include: path.join(__dirname, 'src/assets/img')
         }]
     },
     plugins: [

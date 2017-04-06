@@ -9,14 +9,13 @@ class PerspectiveCamera {
     }
 
     create = ({context}) => {
-        const {actions} = context;
+        const {actions, appState} = context;
 
-        // const camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.25, 16)
         const camera = new THREE.PerspectiveCamera( 36, window.innerWidth / window.innerHeight, 1, 1000 );
-		// camera.position.z = 400;
+
         camera.up = new THREE.Vector3(0, 0, 1)
         camera.lookAt(new THREE.Vector3(0, 0, 0))
-
+        // camera.position.set(appState.getIn(['cameraState', 'originalPosition']).toJS())
         actions.setCamera(camera)
 
         return {camera}
@@ -26,7 +25,7 @@ class PerspectiveCamera {
         const {renderer, scene, appState} = context
         const {camera} = state
 
-        camera.position.set(10, 10, 10)
+        // camera.position.set(appState.getIn(['cameraState', 'position']).toJS())
         camera.lookAt(new THREE.Vector3(0, 0, 0))
 
         renderer.render(scene, camera)

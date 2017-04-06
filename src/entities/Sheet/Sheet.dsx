@@ -1,14 +1,48 @@
 import * as THREE from 'three'
 
+const loader = new THREE.TextureLoader()
+
+function setTexture(texture, params) {
+    const {setState, context, state} = params
+    const {scene} = context
+    const {sheet} = state
+
+    let material = new THREE.MeshBasicMaterial({
+        map: texture
+    })
+    sheet.material = material
+    console.log(sheet)
+
+    setState({sheet})
+    // const sheet = new THREE.Mesh(geometry, material)
+    // scene.add(sheet)
+}
+
 class Sheet {
-    create = ({context, props}) => {
+    create = ({context, props, getParams}) => {
         const {scene} = context
-        const {color} = props
-        console.log('color: ', color)
+        const {color, image} = props
+
+        const myImg = document.createElement('img')
+
+        myImg.addEventListener('load', (s) => {
+            console.dir(s.target)
+            const {state: {sheet}} = getParams()
+            sheet.geometry = new THREE.PlaneGeometry(s.target.naturalWidth / 10, s.target.naturalHeight / 10)
+            // console.log(params.state)
+            loader.load(image, (texture) => {
+                setTexture(texture, getParams())
+            })
+        })
+
+        myImg.src = image;
+
         const geometry = new THREE.PlaneGeometry(4, 4)
         geometry.computeFaceNormals();
-        const material = new THREE.MeshPhongMaterial({color})
+
+        const material = new THREE.MeshPhongMaterial({color: 0x000000})
         material.shininess = 100
+        material.side = THREE.DoubleSide
         const sheet = new THREE.Mesh(geometry, material)
 
         // sheet.rotation.x = 20 * (Math.PI / 180)
