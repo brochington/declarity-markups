@@ -1,5 +1,5 @@
 const canvasActions = {
-    setStageCanvasId(state, actions) {
+    setStageCanvasId(state) {
         console.log('setStageCanvasId');
         return state()
     },

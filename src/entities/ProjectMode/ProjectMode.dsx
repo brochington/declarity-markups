@@ -1,0 +1,44 @@
+import Declarity from 'declarity'
+import Immutable from 'immutable'
+
+import Project from '../Project'
+import Raycaster from '../Raycaster'
+
+import animatedRotation from '../../systems/animatedRotation'
+import animatedPosition from '../../systems/animatedPosition'
+
+
+class ProjectMode {
+  create = () => {
+
+  }
+
+  update = () => {
+
+  }
+
+  render = ({context}) => {
+    const {appState, scene} = context
+    const projects = appState.get('projects', Immutable.Map())
+
+    const projectEntities = projects.map(project => {
+      return (
+          <Project
+            key={`project-${project.get('id')}`}
+            position={{x: 0, y: 0, z: 0}}
+            rotation={{x: 0, y: 0, z: 0}}
+            animate
+            systems={[animatedPosition('project'), animatedRotation('project')]}
+          />
+      )
+    })
+
+    return [
+      <Raycaster key="project-mode-raycaster" possibleIntersections={scene.children}>
+        {projectEntities.toArray()}
+      </Raycaster>
+    ]
+  }
+}
+
+export default ProjectMode

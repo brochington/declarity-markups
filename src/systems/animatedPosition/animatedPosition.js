@@ -4,8 +4,8 @@ const easings = {
     standard: (t, b, c, d) => {
         return c * t / d + b;
     },
-    sinusodial: (t, b, c, d)  => {
-	    return c * Math.sin(t/d * (Math.PI/2)) + b;
+    sinusodial: (t, b, c, d) => {
+        return c * Math.sin(t / d * (Math.PI / 2)) + b;
     }
 }
 
@@ -44,7 +44,7 @@ const animatedPosition = (stateObjName) => {
             let newTick = tick
 
             if (animate) {
-                for(let i = 0; i < dimensions.length; i++) {
+                for (let i = 0; i < dimensions.length; i++) {
                     const dimension = dimensions[i]
                     const originalDimension = lastPosition[dimension]
                     const delta = position[dimension] - originalDimension
@@ -57,24 +57,18 @@ const animatedPosition = (stateObjName) => {
                         // console.log(delta, stateObj.position[dimension], duration, originalDimension, easing)
                         if (position[dimension] >= stateObj.position[dimension]) {
                             stateObj.position[dimension] = easing
-                        }
-
-                        else if (position[dimension] <= stateObj.position[dimension]){
+                        } else if (position[dimension] <= stateObj.position[dimension]) {
                             stateObj.position[dimension] = easing
                         }
 
                         stateObj.position[dimension] = parseFloat(stateObj.position[dimension].toFixed(2))
                         newTick[dimension] += 1;
-                    }
-
-                    else {
+                    } else {
                         newLastPosition[dimension] = position[dimension]
                         newTick[dimension] = 0;
                     }
                 }
-            }
-
-            else {
+            } else {
                 stateObj.position.x = position.x
                 stateObj.position.y = position.y
                 stateObj.position.z = position.z

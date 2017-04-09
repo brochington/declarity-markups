@@ -4,6 +4,7 @@ import Immutable from 'immutable'
 
 import Sheet from '../Sheet'
 import Raycaster from '../Raycaster'
+import ProjectMode from '../ProjectMode'
 
 import animatedRotation from '../../systems/animatedRotation'
 import animatedPosition from '../../systems/animatedPosition'
@@ -11,8 +12,6 @@ import animatedPosition from '../../systems/animatedPosition'
 import sheetImg1 from '../../assets/img/1.jpg'
 import sheetImg2 from '../../assets/img/2.jpg'
 import sheetImg3 from '../../assets/img/3.jpg'
-
-console.log(sheetImg1)
 
 const sheetsData = [{
     id: 1,
@@ -23,39 +22,18 @@ const sheetsData = [{
     image: sheetImg1
 }, {
     id: 2,
-    originalPosition: {x: 0, y: 10, z: 10},
+    originalPosition: {x: 0, y: 100, z: 100},
     originalRotation: {x: 0, y: 0, z: 0},
-    position: {x: 0, y: 0, z: 10},
+    position: {x: 0, y: 0, z: 100},
     rotation: {x: 0, y: 0, z: 0},
     image: sheetImg2
 }, {
     id: 3,
-    originalPosition: {x: 0, y: 20, z: 20},
+    originalPosition: {x: 0, y: 200, z: 200},
     originalRotation: {x: 0, y: 0, z: 0},
-    position: {x: 0, y: 0, z: 20},
+    position: {x: 0, y: 200, z: 200},
     rotation: {x: 0, y: 0, z: 0},
     image: sheetImg3
-// }, {
-//     id: 4,
-//     originalPosition: {x: 0, y: 0, z: 3},
-//     originalRotation: {x: 0, y: 0, z: 0},
-//     position: {x: 0, y: 0, z: 3},
-//     rotation: {x: 0, y: 0, z: 0},
-//     color: 0xff0000
-// }, {
-//     id: 5,
-//     originalPosition: {x: 0, y: 0, z: 4},
-//     originalRotation: {x: 0, y: 0, z: 0},
-//     position: {x: 0, y: 0, z: 4},
-//     rotation: {x: 0, y: 0, z: 0},
-//     color: 0x00ff00
-// }, {
-//     id: 6,
-//     originalPosition: {x: 0, y: 0, z: 5},
-//     originalRotation: {x: 0, y: 0, z: 0},
-//     position: {x: 0, y: 0, z: 5},
-//     rotation: {x: 0, y: 0, z: 0},
-//     color: 0x0000ff
 }]
 
 const onClick = (clickHandler, sheetObj, getParams) => {
@@ -67,8 +45,8 @@ const onClick = (clickHandler, sheetObj, getParams) => {
             let newHasClicked = hasClicked
 
             if (
-                intersects[0] &&
-                intersects[0].object === sheet &&
+                intersects[1] &&
+                intersects[1].object === sheet &&
                 mouseEvents.mousedown &&
                 !hasClicked
             ) {
@@ -88,7 +66,6 @@ const onClick = (clickHandler, sheetObj, getParams) => {
 const clickHandler = (sheet, getParams) => {
     const { context } = getParams()
     const { actions } = context
-    // console.log('clicked!!', sheet, getParams())
 
     actions.setActiveSheet(sheet)
 
@@ -99,6 +76,7 @@ class SceneContent {
     create = ({context}) => {
         const {scene, actions} = context;
         actions.setSheets(sheetsData)
+        actions.initScene()
     }
 
     update = ({state}) => {
@@ -106,6 +84,7 @@ class SceneContent {
     }
 
     render = ({context, getParams}) => {
+      const {scene} = context
         const sheets = context.appState.get('sheets', Immutable.List()).map(sheet => {
             return (
                 <Sheet
@@ -123,9 +102,19 @@ class SceneContent {
             )
         })
 
+        const activeMode = context.appState.get('activeMode')
+
+        let modeContent;
+
+        if (activeMode == 'project') {
+          modeContent = <ProjectMode key="project-mode" />
+        }
+        // console.log(modeContent)
         return (
-            <Raycaster key='sheet-raycaster'>
-                {sheets.toJS()}
+            <Raycaster key='sheet-raycaster' possibleIntersections={scene.children}>
+                {/* {sheets.toJS()} */}
+                {/* {modeContent} */}
+                <ProjectMode key="project-mode" />
             </Raycaster>
         );
     }

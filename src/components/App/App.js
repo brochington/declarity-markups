@@ -10,7 +10,8 @@ import Stage from '../../entities/Stage'
 import actions from '../../actions'
 
 const initState = Immutable.Map({
-    lights: Immutable.Map()
+    lights: Immutable.Map(),
+    activeMode: 'project'
 })
 
 const renderDeclarity = (containerEl, context) => {
@@ -46,7 +47,8 @@ class App extends Component {
         if (this.state.containerLoaded) {
             renderDeclarity(this.state.containerEl, {
                 appState: this.staction.state,
-                actions: this.staction.actions
+                actions: this.staction.actions,
+                containerEl: this.state.containerEl
             })
         }
 
@@ -55,7 +57,7 @@ class App extends Component {
     onContainerLoad = (el) => {
         this.setState({
             containerLoaded: true,
-            containerEl: el
+            containerEl: el,
         })
 
         // renderDeclarity(el, {
@@ -68,7 +70,6 @@ class App extends Component {
     render() {
         return (
             <PropsToContext appState={this.staction.state} actions={this.staction.actions}>
-                <div>Declarity React Boilerplate</div>
                 <div ref={this.onContainerLoad} id="container" />
             </PropsToContext>
         )

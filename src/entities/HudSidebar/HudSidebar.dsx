@@ -1,0 +1,24 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+
+
+class HudSidebar {
+  create = ({context}) => {
+    console.log('HudSidebar create', context)
+  }
+
+  update = ({context}) => {
+    const {hudTexture, hudPlane, hudContext, containerEl} = context
+
+    // console.log('hello?');
+    // hudContext.fillRect(containerEl.innerWidth -400, 0, 400, containerEl.innerHeight);
+    // console.log(containerEl.clientWidth)
+    hudContext.fillRect(containerEl.clientWidth - 200, 0, 400, containerEl.clientHeight);
+
+    hudTexture.needsUpdate = true
+    hudPlane.material.needsUpdate = true
+  }
+}
+
+export default HudSidebar

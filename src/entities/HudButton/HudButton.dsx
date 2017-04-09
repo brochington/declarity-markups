@@ -1,0 +1,31 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+class HudButton {
+  create = ({context}) => {
+    const {camera} = context
+    const geometry = new THREE.PlaneGeometry(4, 4)
+    geometry.computeFaceNormals();
+
+    const material = new THREE.MeshPhongMaterial({color: 0xff00ff})
+    // material.shininess = 100
+    material.side = THREE.DoubleSide
+    const hudButton = new THREE.Mesh(geometry, material)
+    console.log(hudButton)
+
+    hudButton.rotation
+    camera.add(hudButton)
+    // console.log(camera)
+    return {hudButton}
+  }
+
+  update = ({props, state}) => {
+    const {hudButton} = state
+    // console.log('bang?');
+    // hudButton.position.set(0, 0, -105.5)
+    // hudButton.rotation.set(0, 1, 1)
+    return {hudButton}
+  }
+}
+
+export default HudButton

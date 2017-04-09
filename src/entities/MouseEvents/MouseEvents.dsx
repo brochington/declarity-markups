@@ -3,8 +3,8 @@ import * as THREE from 'three'
 
 const onMouseMove = (event, params) => {
     const {state: {mouse}} = params
-    mouse.x = (event.clientX / event.target.width) * 2 - 1
-    mouse.y = - (event.clientY / event.target.height) * 2 + 1
+    mouse.x = (event.clientX / (event.target.width / window.devicePixelRatio)) * 2 - 1
+    mouse.y = - (event.clientY / (event.target.height / window.devicePixelRatio)) * 2 + 1
 }
 
 class MousePosition {

@@ -17,22 +17,22 @@ const sheetActions = {
                 .update('sheets', sheets => sheets.map(sheet => {
                     if (sheet.get('id') > sheetID) {
                         return sheet.update('position', position => position
-                                        .set('z', sheet.getIn(['originalPosition', 'z']) + 30)
-                                        .set('x', sheet.getIn(['originalPosition', 'x']) + 100))
+                                        .set('z', sheet.getIn(['originalPosition', 'z']) + 300)
+                                        .set('x', sheet.getIn(['originalPosition', 'x']) + 1000))
                                     .update('rotation', rotation => rotation.set('y', -1))
                     }
 
                     else {
                         return sheet
-                                .update('position', position => sheet.get('originalPosition'))
-                                .update('rotation', rotation => sheet.get('originalRotation'))
+                                .update('position', () => sheet.get('originalPosition'))
+                                .update('rotation', () => sheet.get('originalRotation'))
                     }
                 }))
                 .update('cameraState', cameraState => {
                     return cameraState
                                 .setIn(['position', 'x'], 0)
-                                .setIn(['position', 'y'], -50)
-                                .setIn(['position', 'z'], sheetID + 200)
+                                .setIn(['position', 'y'], -1000)
+                                .setIn(['position', 'z'], sheetID + 2000)
 
                 })
     }

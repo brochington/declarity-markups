@@ -4,6 +4,8 @@ import cameraActions from './camera'
 import lightActions from './light'
 import audioActions from './audio'
 import sheetActions from './sheet'
+import modesActions from './modes'
+import projectActions from './project'
 
 export default {
     ...canvasActions,
@@ -11,5 +13,7 @@ export default {
     ...cameraActions,
     ...lightActions,
     ...audioActions,
-    ...sheetActions
+    ...sheetActions,
+    ...modesActions,
+    ...projectActions
 }

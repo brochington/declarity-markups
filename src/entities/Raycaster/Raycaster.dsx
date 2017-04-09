@@ -7,15 +7,17 @@ class Raycaster {
     }
 
     create = () => {
+        // console.log('bang..')
         const raycaster = new THREE.Raycaster()
         const intersects = []
 
         return {raycaster, intersects}
     }
 
-    update = ({context, state}) => {
+    update = ({context, state, props}) => {
         const {mouse, appState} = context
         const {raycaster} = state
+        const {possibleIntersections} = props;
 
         const camera = appState.get('camera')
         const scene = appState.get('scene')
@@ -23,8 +25,8 @@ class Raycaster {
         // console.log('raycaster', camera, scene, mouse, appState.toJS());
 
         raycaster.setFromCamera(mouse, camera)
-        let intersects = raycaster.intersectObjects(scene.children)
-
+        let intersects = raycaster.intersectObjects(possibleIntersections)
+        // console.log(intersects)
         return {intersects}
     }
 

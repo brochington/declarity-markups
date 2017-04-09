@@ -1,0 +1,101 @@
+import Declarity from 'declarity'
+
+import Raycaster from '../Raycaster'
+import HudButton from '../HudButton'
+
+import animatedPosition from '../../systems/animatedPosition'
+// import animatedRotation from '../../systems/animatedRotation'
+import meshColor from '../../systems/meshColor'
+
+const onClick = (clickHandler, getParams) => {
+    return {
+        update: ({context, state, props}) => {
+            const {intersects, mouseEvents, camera} = context
+            const {hasClicked, hudButton} = state
+
+            let newHasClicked = hasClicked
+            // console.log(mouseEvents.mousedown, intersects, intersects[0] && intersects[0].object === hudPlane)
+            // console.log(intersects[0].object === hudPlane)
+            // console.log(hudPlane);
+            if (
+                intersects[0] &&
+                intersects[0].object === hudButton &&
+                mouseEvents.mousedown &&
+                !hasClicked
+            ) {
+                newHasClicked = true
+                clickHandler && clickHandler(getParams, intersects[0])
+            }
+
+            if (mouseEvents.mouseup) {
+                newHasClicked = false
+            }
+
+            return {hasClicked: newHasClicked}
+        }
+    }
+}
+
+const setProjectMode = (getParams, stuff) => {
+  const {context} = getParams()
+  const {actions} = context
+
+  actions.setProjectMode()
+}
+
+const setDisciplineMode = (getParams, stuff) => {
+  const {context} = getParams()
+  const {actions} = context
+
+  actions.setDisciplineMode()
+  // const {hudContext} = state;
+
+  // hudContext.fillRect(0, 0, 300, 300)
+  console.log('click, yo!', stuff.point)
+}
+
+const setRevisionsMode = (getParams, stuff) => {
+  const {context} = getParams()
+  const {actions} = context
+
+  actions.setRevisionsMode()
+}
+
+class Hud2 {
+  create = () => {
+
+  }
+
+  update = () => {
+
+  }
+
+  render = ({context, getParams}) => {
+    const {camera} = context;
+
+    return [
+      <Raycaster key="hud2-raycaster" possibleIntersections={camera.children}>
+        <HudButton key="hud-button-1"
+          position={{x: 40, y: 30, z: -105}}
+          animate
+          color={{r: 1, g: 0, b: 1}}
+          systems={[animatedPosition('hudButton'), meshColor('hudButton'), onClick(setProjectMode, getParams)]}
+        />
+        <HudButton key="hud-button-2"
+          position={{x: 45, y: 25, z: -105}}
+          animate
+          color={{r: 0, g: 1, b: 1}}
+          systems={[animatedPosition('hudButton'), meshColor('hudButton'), onClick(setDisciplineMode, getParams)]}
+        />
+        <HudButton key="hud-button-3"
+          position={{x: 35, y: 20, z: -105}}
+          animate
+          color={{r: 1, g: 1, b: 1}}
+          systems={[animatedPosition('hudButton'), meshColor('hudButton'), onClick(setRevisionsMode, getParams)]}
+        />
+      </Raycaster>
+    ]
+  }
+}
+
+export default Hud2

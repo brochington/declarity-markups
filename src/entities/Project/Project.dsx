@@ -1,0 +1,51 @@
+import Declarity from 'declarity'
+import Immutable from 'immutable'
+import * as THREE from 'three'
+
+class Project {
+  create = ({context}) => {
+    const {scene} = context
+
+    const projectCanvas = document.createElement('canvas')
+    const projectContext = projectCanvas.getContext('2d')
+    const geometry = new THREE.PlaneGeometry(4, 4)
+    geometry.computeFaceNormals();
+
+    let projectTexture = new THREE.Texture(projectCanvas)
+    // projectTexture.color = new THREE.Color(1, 1, 1)
+    projectTexture.needsUpdate = true
+    projectTexture.minFilter = THREE.LinearFilter
+    let material = new THREE.MeshBasicMaterial( {map: projectTexture } )
+    material.side = THREE.DoubleSide
+    // material.transparent = true
+
+    let projectPlaneGeometry = new THREE.PlaneGeometry( 400, 400 )
+    projectPlaneGeometry.computeFaceNormals();
+
+    let project = new THREE.Mesh( projectPlaneGeometry, material )
+    scene.add(project)
+    return {project, projectCanvas, projectContext, projectTexture}
+  }
+
+  update = ({state}) => {
+    const {projectContext, projectTexture, project} = state
+    projectContext.clearRect(0, 0, 400, 400)
+    projectContext.fillStyle = "rgba(255,0,0,0.55)"
+    projectContext.fillRect(0, 0, 40, 40)
+    projectContext.font = "Normal 40px Arial"
+    projectContext.textAlign = 'center'
+    projectContext.fillStyle = "rgba(245,245,245,0.75)"
+    projectContext.fillText('better?, yup', 80, 80)
+
+    projectTexture.needsUpdate = true
+    project.material.needsUpdate = true
+  }
+
+  // render = ({context}) => {
+  //   return [
+  //
+  //   ]
+  // }
+}
+
+export default Project

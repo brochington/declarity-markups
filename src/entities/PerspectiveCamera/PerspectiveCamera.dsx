@@ -9,27 +9,37 @@ class PerspectiveCamera {
     }
 
     create = ({context}) => {
-        const {actions, appState} = context;
+        const {actions, containerEl, scene, renderSize} = context;
 
-        const camera = new THREE.PerspectiveCamera( 36, window.innerWidth / window.innerHeight, 1, 1000 );
+        const camera = new THREE.PerspectiveCamera( 36, containerEl.clientWidth / containerEl.clientHeight, 1, 3000 );
 
         camera.up = new THREE.Vector3(0, 0, 1)
         camera.lookAt(new THREE.Vector3(0, 0, 0))
         // camera.position.set(appState.getIn(['cameraState', 'originalPosition']).toJS())
         actions.setCamera(camera)
-
-        return {camera}
+        scene.add(camera);
+        return {camera, previousSize: renderSize}
     }
 
     update = ({context, state}) => {
-        const {renderer, scene, appState} = context
-        const {camera} = state
+        const {renderer, scene, renderSize} = context
+        const {camera, previousSize} = state
 
         // camera.position.set(appState.getIn(['cameraState', 'position']).toJS())
         camera.lookAt(new THREE.Vector3(0, 0, 0))
 
+        if (previousSize.width !== renderSize.width || previousSize.height !== renderSize.height) {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+        }
+
         renderer.render(scene, camera)
 
+        return {previousSize: renderSize}
+    }
+
+    render = ({children}) => {
+      return children
     }
 }
 

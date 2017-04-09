@@ -1,0 +1,129 @@
+import Declarity from 'declarity'
+import * as THREE from 'three'
+
+import Raycaster from '../Raycaster'
+import HudSidebar from '../HudSidebar'
+
+const onClick = (clickHandler, hudPlane, getParams) => {
+    return {
+        update: ({context, state, props}) => {
+            const {intersects, mouseEvents, camera} = context
+            const {hasClicked} = state
+
+            let newHasClicked = hasClicked
+            // console.log(mouseEvents.mousedown, intersects, intersects[0] && intersects[0].object === hudPlane)
+            // console.log(intersects[0].object === hudPlane)
+            // console.log(hudPlane);
+            if (
+                intersects[0] &&
+                intersects[0].object === hudPlane &&
+                mouseEvents.mousedown &&
+                !hasClicked
+            ) {
+                newHasClicked = true
+                clickHandler && clickHandler(getParams, intersects[0])
+            }
+
+            if (mouseEvents.mouseup) {
+                newHasClicked = false
+            }
+
+            return {hasClicked: newHasClicked}
+        }
+    }
+}
+
+const onSidebarClick = (getParams, stuff) => {
+  const {state} = getParams()
+  const {hudContext} = state;
+
+  hudContext.fillRect(0, 0, 300, 300)
+  console.log('click, yo!', stuff.point)
+}
+
+const clickHandler = (sheet, getParams) => {
+    const { context } = getParams()
+    const { actions } = context
+
+    actions.setActiveSheet(sheet)
+
+    actions.viewSheet(sheet.get('id'))
+}
+
+class Hud {
+  getChildContext = ({state}) => {
+      const {hudCanvas, hudContext, hudTexture, hudPlane} = state
+
+      return {hudCanvas, hudContext, hudTexture, hudPlane}
+  }
+  create = ({context}) => {
+    const {containerEl, scene, camera} = context
+
+    const hudCanvas = document.createElement('canvas')
+    const elHeight = containerEl.clientHeight
+    const elWidth = containerEl.clientWidth
+    hudCanvas.height = elHeight
+    hudCanvas.width = elWidth
+
+    const hudContext = hudCanvas.getContext('2d')
+
+    let hudTexture = new THREE.Texture(hudCanvas)
+    hudTexture.needsUpdate = true
+    hudTexture.minFilter = THREE.LinearFilter
+    let material = new THREE.MeshBasicMaterial( {map: hudTexture } )
+    material.side = THREE.DoubleSide
+    material.transparent = true
+
+    let hudPlaneGeometry = new THREE.PlaneGeometry( elWidth / 100, elHeight / 100 )
+    hudPlaneGeometry.computeFaceNormals();
+
+    let hudPlane = new THREE.Mesh( hudPlaneGeometry, material )
+    // console.log(hudPlane)
+    camera.add(hudPlane)
+    scene.add(camera)
+
+    return {hudCanvas, hudContext, hudTexture, hudPlane}
+  }
+
+  update = ({state, context}) => {
+    const {containerEl} = context
+    const {hudCanvas, hudTexture, hudContext, hudPlane} = state
+
+    // const elHeight = containerEl.clientHeight
+    // const elWidth = containerEl.clientWidth
+
+    hudCanvas.height = containerEl.clientHeight
+    hudCanvas.width = containerEl.clientWidth
+
+    hudPlane.position.set(0, 0, -15.5)
+    hudPlane.scale.set(1, 1, 1)
+    hudContext.clearRect(0, 0, 10000, 10000)
+    hudContext.fillStyle = "rgba(255,0,0,0.55)"
+    // hudContext.fillRect(0, 0, elWidth, elHeight)
+    // hudContext.clearRect(20, 20, elWidth - 40, elHeight - 40)
+    // hudContext.font = "Normal 40px Arial"
+    // hudContext.textAlign = 'center'
+    // hudContext.fillStyle = "rgba(245,245,245,0.75)"
+    // hudContext.fillText('better?, yup', elWidth / 2, elHeight / 2)
+
+    hudTexture.needsUpdate = true
+    hudPlane.material.needsUpdate = true
+  }
+
+  render = ({getParams, state, context}) => {
+    const {camera} = context
+    const {hudPlane} = state
+    // console.log(camera.children)
+
+    return [
+      <Raycaster key="hud-raycaster" possibleIntersections={camera.children}>
+        <HudSidebar
+          key="hud-sidebar"
+          systems={[onClick(onSidebarClick, hudPlane, getParams)]}
+        />
+      </Raycaster>
+    ]
+  }
+}
+
+export default Hud

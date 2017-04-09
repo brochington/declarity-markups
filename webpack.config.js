@@ -21,7 +21,7 @@ module.exports = {
     module: {
         rules: [{
             test: /\.js$/,
-            use: ['babel-loader'],
+            use: ['babel-loader', 'eslint-loader'],
             include: path.join(__dirname, 'src')
         }, {
             test: /\.dsx$/,

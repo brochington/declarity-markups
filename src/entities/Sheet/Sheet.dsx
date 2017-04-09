@@ -11,7 +11,7 @@ function setTexture(texture, params) {
         map: texture
     })
     sheet.material = material
-    console.log(sheet)
+    // console.log(sheet)
 
     setState({sheet})
     // const sheet = new THREE.Mesh(geometry, material)
@@ -26,9 +26,9 @@ class Sheet {
         const myImg = document.createElement('img')
 
         myImg.addEventListener('load', (s) => {
-            console.dir(s.target)
+            // console.dir(s.target)
             const {state: {sheet}} = getParams()
-            sheet.geometry = new THREE.PlaneGeometry(s.target.naturalWidth / 10, s.target.naturalHeight / 10)
+            sheet.geometry = new THREE.PlaneGeometry(s.target.naturalWidth, s.target.naturalHeight)
             // console.log(params.state)
             loader.load(image, (texture) => {
                 setTexture(texture, getParams())

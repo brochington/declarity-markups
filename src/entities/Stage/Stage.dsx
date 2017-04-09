@@ -11,9 +11,12 @@ import AmbientLight from '../AmbientLight'
 import DirectionalLight from '../DirectionalLight'
 
 import SceneContent from '../SceneContent'
+import Hud2 from '../Hud2'
+import HudButton from '../HudButton'
 
 import animatedPosition from '../../systems/animatedPosition'
 import animatedRotation from '../../systems/animatedRotation'
+import meshColor from '../../systems/meshColor'
 
 class Stage {
     getChildContext = ({state, props, context}) => {
@@ -39,10 +42,11 @@ class Stage {
         return {};
     }
 
-    render = ({state, props, context}) => {
+    render = ({props, context}) => {
         const { appState } = context
         const cameraPosition = appState.getIn(['cameraState', 'position'], Immutable.Map({x: 0, y: 0, z:0})).toJS()
-        // console.log(cameraPosition)
+        // const cameraPosition = {x: -1000, y: -1000, z: 1000}
+
         return [
             <WebGLRenderer key="webglrenderer" container={props.containerEl}>
                 <MouseEvents key="mouseEvents">
@@ -52,7 +56,23 @@ class Stage {
                             position={cameraPosition}
                             animate={true}
                             systems={[animatedPosition('camera')]}
-                        />
+                        >
+                          <Hud2 key="hud-2"/>
+                          {/* <HudButton key="hud-button-1"
+                            position={{x: 40, y: 30, z: -105}}
+                            animate
+                            color={{r: 1, g: 0, b: 1}}
+                            systems={[animatedPosition('hudButton'), meshColor('hudButton')]}
+                          />
+                          <HudButton key="hud-button-2"
+                            position={{x: 45, y: 25, z: -105}}
+                            animate
+                            color={{r: 0, g: 1, b: 1}}
+                            systems={[animatedPosition('hudButton'), meshColor('hudButton')]}
+                          /> */}
+                          {/* <HudButton key="hud-button-2" /> */}
+                          {/* <HudButton key="hud-button-3" /> */}
+                        </PerspectiveCamera>
                         <AmbientLight key="ambientLight" />
                         <SceneContent key="sceneContent" />
                     </Scene>
